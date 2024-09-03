@@ -20,7 +20,9 @@ public class VideoGameDb extends Simulation {
                     .check(jsonPath("$[?(@.id==1)].name").is("Resident Evil 4"))
             )
             .pause(5)
-            .exec(http("get game 1").get("/videogame/1").check(status().in(200, 201, 202)))
+            .exec(http("get game 1").get("/videogame/1")
+                    .check(status()
+                            .in(200, 201, 202)))
             .pause(4)
             .exec(http("get all").get("/videogame"))
             .pause(Duration.ofMillis(4000));
