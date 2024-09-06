@@ -6,7 +6,6 @@ import io.gatling.javaapi.core.Session;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,11 +26,11 @@ public class VideoGameDb extends Simulation {
 
     ChainBuilder getGame2 =
 
-                    foreach( "#{idList}","elt").on(
-                         exec(http("get game 2").get("/videogame/#{elt}").check(status().is(200))
+            foreach("#{idList}", "elt").on(
+                    exec(http("get game 2").get("/videogame/#{elt}").check(status().is(200))
                     )
 
-                    );
+            );
 
     HttpProtocolBuilder httpProtocolBuilder = http.acceptHeader("application/json")
             .baseUrl("https://videogamedb.uk/api");
@@ -52,7 +51,7 @@ public class VideoGameDb extends Simulation {
                 System.out.println("unbelievable " + session.get("allids"));
 
                 List<String> allids = convertToList(session.get("allids"));
-                Session session2 = session.set("idList",allids);
+                Session session2 = session.set("idList", allids);
                 return session2;
             })
             .exec(getGame2);
