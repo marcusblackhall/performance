@@ -51,8 +51,7 @@ public class VideoGameDb extends Simulation {
                 System.out.println("unbelievable " + session.get("allids"));
 
                 List<String> allids = convertToList(session.get("allids"));
-                Session session2 = session.set("idList", allids);
-                return session2;
+                return session.set("idList", allids);
             })
             .exec(getGame2);
 

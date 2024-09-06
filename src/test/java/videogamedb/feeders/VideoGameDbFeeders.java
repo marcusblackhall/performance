@@ -36,9 +36,9 @@ public class VideoGameDbFeeders extends Simulation {
             Stream.generate((Supplier<Map<String, Object>>) () -> {
                 Random random = new Random();
                 int nr = random.nextInt(10) + 1;
-                HashMap<String,Object> obj = new HashMap<>();
-                obj.put("category","mycat");
-                obj.put("name","myname");
+                HashMap<String, Object> obj = new HashMap<>();
+                obj.put("category", "mycat");
+                obj.put("name", "myname");
                 obj.put("releaseDate", LocalDate.now().toString());
                 obj.put("reviewScore", 5);
 
@@ -48,22 +48,20 @@ public class VideoGameDbFeeders extends Simulation {
             }).iterator();
 
 
-
     private ChainBuilder authenticate =
 
-                    exec(
-                            http("authenticate").post("/authenticate").body(StringBody("{\n" +
-                                            "  \"password\": \"admin\",\n" +
-                                            "  \"username\": \"admin\"\n" +
-                                            "}"))
-                                    .check(jmesPath("token").saveAs("jwtToken"))
-                    )
-                    .exec( session -> {
+            exec(
+                    http("authenticate").post("/authenticate").body(StringBody("{\n" +
+                                    "  \"password\": \"admin\",\n" +
+                                    "  \"username\": \"admin\"\n" +
+                                    "}"))
+                            .check(jmesPath("token").saveAs("jwtToken"))
+            )
+                    .exec(session -> {
                         String jwtToken = session.getString("jwtToken");
-                        System.out.println("Token is " + jwtToken );
+                        System.out.println("Token is " + jwtToken);
                         return session;
                     });
-            ;
 
     private ChainBuilder getGameByCsv =
             feed(idcsv)
@@ -86,17 +84,17 @@ public class VideoGameDbFeeders extends Simulation {
             feed(customCreateIterator)
                     .exec(
                             http("create game #{category}").post("/videogame")
-                                    .header("authorization","Bearer " + "#{jwtToken}")
+                                    .header("authorization", "Bearer " + "#{jwtToken}")
                                     .body(
-                                    ElFileBody("data/create.json")
-                            ).asJson()
+                                            ElFileBody("data/create.json")
+                                    ).asJson()
                     );
 
 
     private ScenarioBuilder scenarioBuilder = scenario("Get games scenario")
             .exec(authenticate)
             .repeat(10).on(
-                    exec(getGameByCsv, getGameByJson, getGameByCustom,createGame)
+                    exec(getGameByCsv, getGameByJson, getGameByCustom, createGame)
             );
 
     {
