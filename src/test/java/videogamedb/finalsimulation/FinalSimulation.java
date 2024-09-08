@@ -13,6 +13,7 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 
 public class FinalSimulation extends Simulation {
 
+    public static final Integer NO_USERS =   Integer.parseInt( System.getProperty("NO_USERS","2"));
 
     HttpProtocolBuilder httpProtocol = http
             .baseUrl("https://videogamedb.uk/api")
@@ -55,7 +56,9 @@ public class FinalSimulation extends Simulation {
             exec(http("Delete game with id #{createdId}")
 
                     .delete("/videogame/1")
-                    .header("authorization", "Bearer " + "#{jwtToken}")
+                    .header("authorization", "Bearer " + "#{jwtToken}").check(
+                            bodyString().is("Video game deleted")
+                    )
             );
 
 
@@ -78,7 +81,7 @@ public class FinalSimulation extends Simulation {
     }
 
     {
-        setUp(sb.injectOpen(rampUsers(5).during(5))).maxDuration(10).protocols(httpProtocol);
+        setUp(sb.injectOpen(rampUsers(NO_USERS).during(5))).maxDuration(10).protocols(httpProtocol);
     }
 
     @Override
