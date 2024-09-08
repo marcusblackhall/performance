@@ -50,11 +50,16 @@ public class VideoGameDbFeeders extends Simulation {
 
     private ChainBuilder authenticate =
 
-            exec(
-                    http("authenticate").post("/authenticate").body(StringBody("{\n" +
-                                    "  \"password\": \"admin\",\n" +
-                                    "  \"username\": \"admin\"\n" +
-                                    "}"))
+            exec (session -> {
+                return session.set("username","admin")
+                        .set("password","admin");
+
+            })
+                    .exec(
+                    http("authenticate").post("/authenticate").body(
+                                    ElFileBody("data/authbody.json")
+
+                            ).asJson()
                             .check(jmesPath("token").saveAs("jwtToken"))
             )
                     .exec(session -> {
